@@ -6,7 +6,6 @@ Concrete MethodModule class for a specific learning MethodModule
 # License: TBD
 
 from local_code.base_class.method import method
-from local_code.stage_1_code.Evaluate_Accuracy import Evaluate_Accuracy
 import torch
 from torch import nn
 import numpy as np
@@ -15,9 +14,10 @@ import numpy as np
 class Method_MLP(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
-    max_epoch = 500
+    max_epoch = 20
     # it defines the learning rate for gradient descent based optimizer for model learning
     learning_rate = 1e-3
+    batch_size = 128
 
     # it defines the the MLP model architecture, e.g.,
     # how many layers, size of variables in each layer, activation function, etc.
@@ -54,50 +54,55 @@ class Method_MLP(method, nn.Module):
     # backward error propagation will be implemented by pytorch automatically
     # so we don't need to define the error backpropagation function here
 
-    def train(self, X, y):
-        # check here for the torch.optim doc: https://pytorch.org/docs/stable/optim.html
+    def train_model(self, X, y):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-        # check here for the nn.CrossEntropyLoss doc: https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html
         loss_function = nn.CrossEntropyLoss()
-        # for training accuracy investigation purpose
-        accuracy_evaluator = Evaluate_Accuracy('training evaluator', '')
 
-        # it will be an iterative gradient updating process
-        # we don't do mini-batch, we use the whole input as one batch
-        # you can try to split X and y into smaller-sized batches by yourself
-        for epoch in range(self.max_epoch): # you can do an early stop if self.max_epoch is too much...
-            # get the output, we need to covert X into torch.tensor so pytorch algorithm can operate on it
-            y_pred = self.forward(torch.FloatTensor(np.array(X)))
-            # convert y to torch.tensor as well
-            y_true = torch.LongTensor(np.array(y))
-            # calculate the training loss
-            train_loss = loss_function(y_pred, y_true)
+        X = torch.tensor(X, dtype=torch.float32)
+        y = torch.tensor(y, dtype=torch.long)
+        n = len(X)
+        self.history = {'epoch': [], 'loss': [], 'acc': []}
 
-            # check here for the gradient init doc: https://pytorch.org/docs/stable/generated/torch.optim.Optimizer.zero_grad.html
-            optimizer.zero_grad()
-            # check here for the loss.backward doc: https://pytorch.org/docs/stable/generated/torch.Tensor.backward.html
-            # do the error backpropagation to calculate the gradients
-            train_loss.backward()
-            # check here for the opti.step doc: https://pytorch.org/docs/stable/optim.html
-            # update the variables according to the optimizer and the gradients calculated by the above loss.backward function
-            optimizer.step()
+        for epoch in range(self.max_epoch):
+            self.train()
+            perm = torch.randperm(n)    # shuffle indices of 0-59999
+            total_loss, correct = 0.0, 0
 
-            if epoch%100 == 0:
-                accuracy_evaluator.data = {'true_y': y_true, 'pred_y': y_pred.max(1)[1]}
-                print('Epoch:', epoch, 'Accuracy:', accuracy_evaluator.evaluate(), 'Loss:', train_loss.item())
+            for i in range(0, n, self.batch_size):
+                idx = perm[i:i + self.batch_size]   # obtains next 128 shuffled indices
+                xb, yb = X[idx], y[idx]             # batch's images and labels
+
+                # TODO 1: forward pass on xb -> logits
+                logits = self.forward(xb)
+                # TODO 2: compute the loss from logits and yb
+                loss = loss_function(logits, yb)
+                # TODO 3: the three update lines (clear, backward, step)
+                optimizer.zero_grad()   # erasse correctiosn form last batch
+                loss.backward()         # work out correction for every weight
+                optimizer.step()        # apply corrections
+                
+
+                total_loss += loss.item() * len(idx)
+                correct += (logits.argmax(1) == yb).sum().item()
+
+            epoch_loss = total_loss / n
+            epoch_acc = correct / n
+            self.history['epoch'].append(epoch + 1)
+            self.history['loss'].append(epoch_loss)
+            self.history['acc'].append(epoch_acc)
+            print('Epoch', epoch + 1, 'loss:', round(epoch_loss, 4), 'acc:', round(epoch_acc, 4))
+
     
+    @torch.no_grad()    # no leanring during testsing, so skip gradeint bookkeeping
     def test(self, X):
-        # do the testing, and result the result
-        y_pred = self.forward(torch.FloatTensor(np.array(X)))
-        # convert the probability distributions to the corresponding labels
-        # instances will get the labels corresponding to the largest probability
-        return y_pred.max(1)[1]
-    
+        self.eval()
+        X = torch.tensor(X, dtype=torch.float32)
+        return self.forward(X).argmax(1).numpy()
+
     def run(self):
         print('method running...')
         print('--start training...')
-        self.train(self.data['train']['X'], self.data['train']['y'])
+        self.train_model(self.data['train']['X'], self.data['train']['y'])
         print('--start testing...')
         pred_y = self.test(self.data['test']['X'])
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
-            

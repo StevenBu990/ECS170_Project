@@ -23,7 +23,6 @@ class Dataset_Loader(dataset):
         path = self.dataset_source_folder_path + self.dataset_source_file_name
 
         df = pd.read_csv(path, header=None)
-        print(df.shape)
 
         y = df.iloc[:, 0]
         y = y.to_numpy(dtype=np.int64)
