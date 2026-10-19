@@ -20,37 +20,24 @@ class Method_MLP(method, nn.Module):
     learning_rate = 1e-3
     batch_size = 128
 
-    # it defines the the MLP model architecture, e.g.,
-    # how many layers, size of variables in each layer, activation function, etc.
-    # the size of the input/output portal of the model architecture should be consistent with our data input and desired output
-    def __init__(self, mName, mDescription):
+    def __init__(self, mName, mDescription, hidden_dims=(256, 128)):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
-        # check here for nn.Linear doc: https://pytorch.org/docs/stable/generated/torch.nn.Linear.html
-        
-        ## WE WANT TO EXPERIMENT WITH 256 and 128 in output of Linear
-        self.fc_layer_1 = nn.Linear(784, 256)
-        # check here for nn.ReLU doc: https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html
-        self.activation_func_1 = nn.ReLU()
+        self.hidden_dims = hidden_dims
 
-        self.fc_layer_2 = nn.Linear(256, 128)
-        # check here for nn.Softmax doc: https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html
-        self.activation_func_2 = nn.ReLU()
+        layers = []
+        in_size = 784                       # input: one value per pixel
+        for out_size in hidden_dims:
+            layers.append(nn.Linear(in_size, out_size))
+            layers.append(nn.ReLU())
+            in_size = out_size
 
-        self.fc_layer_3 = nn.Linear(128, 10)
+        layers.append(nn.Linear(in_size, 10))
 
-    # it defines the forward propagation function for input x
-    # this function will calculate the output layer by layer
+        self.net = nn.Sequential(*layers)
 
     def forward(self, x):
-        '''Forward propagation'''
-        # hidden layer embeddings
-        h1 = self.activation_func_1(self.fc_layer_1(x))
-        h2 = self.activation_func_2(self.fc_layer_2(h1))
-
-        # output layer: 10 raw scores, one per digit (no softmax)
-        y_pred = self.fc_layer_3(h2)
-        return y_pred
+        return self.net(x)                  # runs every layer in order
 
     # backward error propagation will be implemented by pytorch automatically
     # so we don't need to define the error backpropagation function here

@@ -13,10 +13,11 @@ import csv
 import pandas as pd
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'sgd_0.001'
+RUN_NAME = 'arch_deeper'
+HIDDEN_DIMS = (512, 256, 128, 64)
 EPOCHS = 20
 LEARNING_RATE = 1e-3
-OPTIMIZER = 'sgd'          # 'adam' or 'sgd'
+OPTIMIZER = 'adam'          # 'adam' or 'sgd'
 # ---------------------------------------------------------
 
 # ---- parameter section ----
@@ -32,7 +33,7 @@ test_obj = Dataset_Loader('MNIST test', '')
 test_obj.dataset_source_folder_path = '../../data/stage_2_data/'
 test_obj.dataset_source_file_name = 'test.csv'
 
-method_obj = Method_MLP('multi-layer perceptron', '')
+method_obj = Method_MLP('multi-layer perceptron', '', hidden_dims=HIDDEN_DIMS)
 method_obj.max_epoch = EPOCHS
 method_obj.learning_rate = LEARNING_RATE
 method_obj.optimizer_name = OPTIMIZER
@@ -73,7 +74,7 @@ results_dir = '../../result/stage_2_result/'
 pd.DataFrame(history).to_csv(f'{results_dir}history_{RUN_NAME}.csv', index=False)
 
 # 2. add a row to the experiments table
-row = {'run': RUN_NAME, 'epochs': EPOCHS, 'lr': LEARNING_RATE, 'optimizer': OPTIMIZER,
+row = {'run': RUN_NAME, 'hidden_dims': '-'.join(str(h) for h in HIDDEN_DIMS), 'epochs': EPOCHS, 'lr': LEARNING_RATE, 'optimizer': OPTIMIZER,
        'train_acc': round(history['acc'][-1], 4)}
 row.update({name: round(value, 4) for name, value in scores.items()})
 
