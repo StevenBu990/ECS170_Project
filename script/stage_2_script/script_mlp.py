@@ -8,6 +8,16 @@ matplotlib.use('Agg')            # save plots to files instead of opening a wind
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import os
+import csv
+import pandas as pd
+
+# ---- experiment settings: change these for each run ----
+RUN_NAME = 'baseline'
+EPOCHS = 20
+LEARNING_RATE = 1e-3
+OPTIMIZER = 'adam'          # 'adam' or 'sgd'
+# ---------------------------------------------------------
 
 # ---- parameter section ----
 np.random.seed(2)
@@ -23,6 +33,9 @@ test_obj.dataset_source_folder_path = '../../data/stage_2_data/'
 test_obj.dataset_source_file_name = 'test.csv'
 
 method_obj = Method_MLP('multi-layer perceptron', '')
+method_obj.max_epoch = EPOCHS
+method_obj.learning_rate = LEARNING_RATE
+method_obj.optimizer_name = OPTIMIZER
 
 result_obj = Result_Saver('saver', '')
 result_obj.result_destination_folder_path = '../../result/stage_2_result/MLP_'
@@ -49,8 +62,28 @@ history = method_obj.history
 plt.plot(history['epoch'], history['loss'], marker='o')
 plt.xlabel('Epoch')
 plt.ylabel('Training loss')
-plt.title('Training loss vs. Epoch')
+plt.title('Training loss vs. Epoch ({RUN_NAME})')
 plt.grid(True)
-plt.savefig('../../result/stage_2_result/convergence.png', dpi=150)
+plt.savefig('../../result/stage_2_result/convergence_({RUN_NAME}).png', dpi=150)
+
+# ---- record this run (2-4) ----
+results_dir = '../../result/stage_2_result/'
+
+# 1. save the loss history, for the comparison plot later
+pd.DataFrame(history).to_csv(f'{results_dir}history_{RUN_NAME}.csv', index=False)
+
+# 2. add a row to the experiments table
+row = {'run': RUN_NAME, 'epochs': EPOCHS, 'lr': LEARNING_RATE, 'optimizer': OPTIMIZER,
+       'train_acc': round(history['acc'][-1], 4)}
+row.update({name: round(value, 4) for name, value in scores.items()})
+
+table_path = results_dir + 'experiments.csv'
+is_new = not os.path.exists(table_path)
+with open(table_path, 'a', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=row.keys())
+    if is_new:
+        writer.writeheader()      # column names, only the first time
+    writer.writerow(row)
+print('recorded run', RUN_NAME, 'in experiments.csv')
 
 print('************ Finish ************')

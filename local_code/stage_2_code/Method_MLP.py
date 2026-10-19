@@ -15,6 +15,7 @@ class Method_MLP(method, nn.Module):
     data = None
     # it defines the max rounds to train the model
     max_epoch = 20
+    optimizer_name = 'adam'
     # it defines the learning rate for gradient descent based optimizer for model learning
     learning_rate = 1e-3
     batch_size = 128
@@ -55,7 +56,12 @@ class Method_MLP(method, nn.Module):
     # so we don't need to define the error backpropagation function here
 
     def train_model(self, X, y):
-        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+        if self.optimizer_name == 'sgd':
+            optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate, momentum=0.9)
+        else:
+            optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+
+
         loss_function = nn.CrossEntropyLoss()
 
         X = torch.tensor(X, dtype=torch.float32)
@@ -72,11 +78,8 @@ class Method_MLP(method, nn.Module):
                 idx = perm[i:i + self.batch_size]   # obtains next 128 shuffled indices
                 xb, yb = X[idx], y[idx]             # batch's images and labels
 
-                # TODO 1: forward pass on xb -> logits
                 logits = self.forward(xb)
-                # TODO 2: compute the loss from logits and yb
                 loss = loss_function(logits, yb)
-                # TODO 3: the three update lines (clear, backward, step)
                 optimizer.zero_grad()   # erasse correctiosn form last batch
                 loss.backward()         # work out correction for every weight
                 optimizer.step()        # apply corrections
