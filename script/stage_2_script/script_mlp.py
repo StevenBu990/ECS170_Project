@@ -13,10 +13,10 @@ import csv
 import pandas as pd
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'baseline'
+RUN_NAME = 'sgd_0.001'
 EPOCHS = 20
 LEARNING_RATE = 1e-3
-OPTIMIZER = 'adam'          # 'adam' or 'sgd'
+OPTIMIZER = 'sgd'          # 'adam' or 'sgd'
 # ---------------------------------------------------------
 
 # ---- parameter section ----
@@ -62,9 +62,9 @@ history = method_obj.history
 plt.plot(history['epoch'], history['loss'], marker='o')
 plt.xlabel('Epoch')
 plt.ylabel('Training loss')
-plt.title('Training loss vs. Epoch ({RUN_NAME})')
+plt.title(f'Training loss vs. Epoch ({RUN_NAME})')
 plt.grid(True)
-plt.savefig('../../result/stage_2_result/convergence_({RUN_NAME}).png', dpi=150)
+plt.savefig(f'../../result/stage_2_result/convergence_{RUN_NAME}.png', dpi=150)
 
 # ---- record this run (2-4) ----
 results_dir = '../../result/stage_2_result/'
