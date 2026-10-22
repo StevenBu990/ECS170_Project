@@ -1,0 +1,7 @@
+{
+  "lr": 0.01,
+  "epochs": 10,
+  "hidden_layers": [128,64],
+  "optimizer": "sgd",
+  "loss": "cross-entropy"
+}

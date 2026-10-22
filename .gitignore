@@ -2,5 +2,11 @@
 __pycache__/
 .DS_Store
 .idea/
-result/
 data/
+test_*.,py
+test_*.,py
+test_*.py
+result/**/*
+!result/**/
+!result/**/*.png
+!result/**/*.csv
