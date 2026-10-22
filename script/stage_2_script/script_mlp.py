@@ -30,7 +30,8 @@ EPOCHS = cfg['epochs']
 LEARNING_RATE = cfg['lr']
 OPTIMIZER = cfg['optimizer']
 LOSS_FN = cfg['loss']
-RUN_NAME = f'{LOSS_FN}-loss_{OPTIMIZER}-opt_{LEARNING_RATE}-lr_{HIDDEN_DIMS}-hidden_{EPOCHS}-epoch'
+# RUN_NAME = f'{LOSS_FN}-loss_{OPTIMIZER}-opt_{LEARNING_RATE}-lr_{HIDDEN_DIMS}-hidden_{EPOCHS}-epoch'
+RUN_NAME = 'baseline' # when running baseline
 
 results_dir = '../../result/stage_2_result/'
 
