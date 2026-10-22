@@ -1,7 +1,7 @@
 {
   "lr": 0.01,
   "epochs": 10,
-  "hidden_layers": [256, 128],
+  "hidden_layers": [512,256],
   "optimizer": "adam",
   "loss": "cross-entropy"
 }

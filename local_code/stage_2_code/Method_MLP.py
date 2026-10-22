@@ -92,7 +92,7 @@ class Method_MLP(method, nn.Module):
             print('Epoch', epoch + 1, 'loss:', round(epoch_loss, 4), 'acc:', round(epoch_acc, 4))
 
     
-    @torch.no_grad()    # no learning during testing, so skip gradeint bookkeeping
+    @torch.no_grad()    # no learning during testing, so skip gradient bookkeeping
     def test(self, X):
         self.eval()
         X = torch.tensor(X, dtype=torch.float32)
