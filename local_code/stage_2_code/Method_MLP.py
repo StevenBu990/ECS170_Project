@@ -5,10 +5,10 @@ Concrete MethodModule class for a specific learning MethodModule
 # Copyright (c) 2017-Current Jiawei Zhang <jiawei@ifmlab.org>
 # License: TBD
 
-from local_code.base_class.method import method
 import torch
 from torch import nn
-import numpy as np
+
+from local_code.base_class.method import method
 
 
 class Method_MLP(method, nn.Module):
@@ -20,16 +20,18 @@ class Method_MLP(method, nn.Module):
     learning_rate = 1e-3
     batch_size = 128
 
-    def __init__(self, mName, mDescription, hidden_dims=(256, 128)):
+    def __init__(self, mName, mDescription, hidden_dims=(256, 128), loss_fn = 'cross-entropy'):
         method.__init__(self, mName, mDescription)
         nn.Module.__init__(self)
         self.hidden_dims = hidden_dims
+        self.loss_fn = loss_fn
 
         layers = []
         in_size = 784                       # input: one value per pixel
         for out_size in hidden_dims:
             layers.append(nn.Linear(in_size, out_size))
             layers.append(nn.ReLU())
+            layers.append(nn.Dropout(p=0.3))
             in_size = out_size
 
         layers.append(nn.Linear(in_size, 10))
@@ -42,14 +44,21 @@ class Method_MLP(method, nn.Module):
     # backward error propagation will be implemented by pytorch automatically
     # so we don't need to define the error backpropagation function here
 
+    def choose_loss(self):
+        nll = nn.NLLLoss()
+        lookup = {'cross-entropy': nn.CrossEntropyLoss(),
+                  # NLLLoss expects log-probabilities, so turn the raw scores into those first
+                  'negative-log': lambda logits, y: nll(torch.log_softmax(logits, dim=1), y),
+                  'multi-margin': nn.MultiMarginLoss()}
+        return lookup[self.loss_fn]
+
     def train_model(self, X, y):
         if self.optimizer_name == 'sgd':
             optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate, momentum=0.9)
         else:
             optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
-
-        loss_function = nn.CrossEntropyLoss()
+        loss_function = self.choose_loss()
 
         X = torch.tensor(X, dtype=torch.float32)
         y = torch.tensor(y, dtype=torch.long)
@@ -67,7 +76,7 @@ class Method_MLP(method, nn.Module):
 
                 logits = self.forward(xb)
                 loss = loss_function(logits, yb)
-                optimizer.zero_grad()   # erasse correctiosn form last batch
+                optimizer.zero_grad()   # remove gradients from last batch
                 loss.backward()         # work out correction for every weight
                 optimizer.step()        # apply corrections
                 
