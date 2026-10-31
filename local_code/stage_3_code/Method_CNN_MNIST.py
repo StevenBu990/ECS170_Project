@@ -3,16 +3,15 @@
 CNN for MNIST: two conv blocks (conv -> ReLU -> max pool), then two fully connected layers.
 '''
 
-from local_code.base_class.method import method
+from local_code.stage_3_code.Method_CNN import Method_CNN
 import torch
 from torch import nn
 
-class Method_CNN_MNIST(method, nn.Module):
+class Method_CNN_MNIST(Method_CNN):
     data = None
 
-    def __init__(self, mName, mDescription):
-        method.__init__(self, mName, mDescription)
-        nn.Module.__init__(self)
+    def __init__(self, mName, mDescription, device='auto'):
+        Method_CNN.__init__(self, mName, mDescription, device)
 
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3, padding=1)
         # conv2: 32 -> 64 channels, kernel 3, padding 1
