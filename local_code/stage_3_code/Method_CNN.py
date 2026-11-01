@@ -30,7 +30,7 @@ class Method_CNN(method, nn.Module):
         nn.Module.__init__(self)
         self.device = pick_device() if device == 'auto' else torch.device(device)
 
-    def train_model(self, X, y):
+    def train_model(self, X, y, X_val=None, y_val=None):
         self.to(self.device)                # move every layer's weights to the GPU
         if self.optimizer_name == 'sgd':
             optimizer = torch.optim.SGD(self.parameters(), lr=self.learning_rate, momentum=0.9)
@@ -40,7 +40,7 @@ class Method_CNN(method, nn.Module):
 
         loader = DataLoader(Image_Dataset(X, y), batch_size=self.batch_size, shuffle=True)
         n=len(X)
-        self.history = {'epoch': [], 'loss': [], 'acc': []}
+        self.history = {'epoch': [], 'loss': [], 'acc': [], 'val_acc': []}
 
         for epoch in range(self.max_epoch):
             self.train()
@@ -64,6 +64,11 @@ class Method_CNN(method, nn.Module):
             self.history['loss'].append(epoch_loss)
             self.history['acc'].append(epoch_acc)
             print('Epoch', epoch+1, 'loss:', round(epoch_loss, 4), 'acc:', round(epoch_acc, 4))
+
+            if X_val is not None:
+                val_acc = (self.test(X_val) == y_val).mean()   # fraction of val images correct
+                self.history['val_acc'].append(val_acc)
+                print('     val acc:', round(val_acc, 4))
     
     @torch.no_grad()
     def test(self, X):
@@ -78,7 +83,7 @@ class Method_CNN(method, nn.Module):
     def run(self):
         print('method running on', self.device, '...')
         print('--start training...')
-        self.train_model(self.data['train']['X'], self.data['train']['y'])
+        self.train_model(self.data['train']['X'], self.data['train']['y'], self.data['val']['X'], self.data['val']['y'])
         print('--start testing...')
         pred_y = self.test(self.data['test']['X'])
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
