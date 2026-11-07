@@ -69,7 +69,7 @@ class Method_CNN(method, nn.Module):
                 val_acc = (self.test(X_val) == y_val).mean()   # fraction of val images correct
                 self.history['val_acc'].append(val_acc)
                 print('     val acc:', round(val_acc, 4))
-    
+
     @torch.no_grad()
     def test(self, X):
         self.eval()
@@ -79,7 +79,7 @@ class Method_CNN(method, nn.Module):
             logits = self.forward(X[i:i + 1000].to(self.device))
             preds.append(logits.argmax(1).cpu())
         return torch.cat(preds).numpy()
-    
+
     def run(self):
         print('method running on', self.device, '...')
         print('--start training...')
