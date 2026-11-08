@@ -69,7 +69,7 @@ class Method_CNN(method, nn.Module):
                 val_acc = (self.test(X_val) == y_val).mean()   # fraction of val images correct
                 self.history['val_acc'].append(val_acc)
                 print('     val acc:', round(val_acc, 4))
-
+                
     @torch.no_grad()
     def test(self, X):
         self.eval()

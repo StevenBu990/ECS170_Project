@@ -1,5 +1,7 @@
 from local_code.stage_3_code.Dataset_Loader import Dataset_Loader
 from local_code.stage_3_code.Method_CNN_MNIST import Method_CNN_MNIST
+from local_code.stage_3_code.Method_CNN_ORL import Method_CNN_ORL
+from local_code.stage_3_code.Method_CNN_CIFAR import Method_CNN_CIFAR
 from local_code.stage_3_code.Result_Saver import Result_Saver
 from local_code.stage_3_code.Setting_Train_Val_Test import Setting_Train_Val_Test
 from local_code.stage_3_code.Evaluate_Metrics import Evaluate_Metrics
@@ -14,16 +16,16 @@ import csv
 import time
 
 # ---- experiment settings: change these for each run ----
-DATASET = 'MNIST'          # 'MNIST', 'ORL', or 'CIFAR'
-RUN_NAME = 'baseline'
-EPOCHS = 10
+DATASET = 'ORL'          # 'MNIST', 'ORL', or 'CIFAR'
+RUN_NAME = 'drop0.5'
+EPOCHS = 30
 LEARNING_RATE = 1e-3
 OPTIMIZER = 'adam'         # 'adam' or 'sgd'
 BATCH_SIZE = 64
 DEVICE = 'auto'            # 'auto' (GPU if available), 'cpu', or 'mps'
 # ---------------------------------------------------------
 
-MODELS = {'MNIST': Method_CNN_MNIST}           # ORL and CIFAR get added here later
+MODELS = {'MNIST': Method_CNN_MNIST, 'ORL': Method_CNN_ORL, 'CIFAR': Method_CNN_CIFAR}
 VAL_SIZE = {'MNIST': 0.1, 'ORL': 40, 'CIFAR': 0.1}   # ORL: one image per person
 RESULTS_DIR = '../../result/stage_3_result/'
 os.makedirs(RESULTS_DIR, exist_ok=True)

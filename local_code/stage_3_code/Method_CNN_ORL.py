@@ -28,7 +28,7 @@ class Method_CNN_ORL(Method_CNN):
         self.fc2 = nn.Linear(1024, 512)
         self.fc3 = nn.Linear(512, 40)
 
-        self.drop = nn.Dropout(0.2)
+        self.drop = nn.Dropout(0.5)
 
     def forward(self, x):
         x = self.pool(self.relu(self.conv1(x))) # 112 x 92 x 32 -> 56 x 46 x 32
