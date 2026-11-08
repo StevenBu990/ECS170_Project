@@ -16,13 +16,13 @@ import csv
 import time
 
 # ---- experiment settings: change these for each run ----
-DATASET = 'ORL'          # 'MNIST', 'ORL', or 'CIFAR'
-RUN_NAME = 'fc256'
-EPOCHS = 30
+DATASET = 'MNIST'
+RUN_NAME = 'baseline'
+EPOCHS = 10
 LEARNING_RATE = 1e-3
 OPTIMIZER = 'adam'         # 'adam' or 'sgd'
 BATCH_SIZE = 64
-DEVICE = 'auto'            # 'auto' (GPU if available), 'cpu', or 'mps'
+DEVICE = 'auto'
 # ---------------------------------------------------------
 
 MODELS = {'MNIST': Method_CNN_MNIST, 'ORL': Method_CNN_ORL, 'CIFAR': Method_CNN_CIFAR}
