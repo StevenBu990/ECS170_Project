@@ -17,7 +17,7 @@ import time
 
 # ---- experiment settings: change these for each run ----
 DATASET = 'ORL'          # 'MNIST', 'ORL', or 'CIFAR'
-RUN_NAME = 'drop0.5'
+RUN_NAME = 'fc256'
 EPOCHS = 30
 LEARNING_RATE = 1e-3
 OPTIMIZER = 'adam'         # 'adam' or 'sgd'
