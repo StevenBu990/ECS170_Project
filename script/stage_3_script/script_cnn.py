@@ -18,16 +18,16 @@ import time
 # ---- experiment settings: change these for each run ----
 DATASET = 'MNIST'
 RUN_NAME = 'baseline'
-EPOCHS = 10
+EPOCHS = 20
 LEARNING_RATE = 1e-3
 OPTIMIZER = 'adam'         # 'adam' or 'sgd'
-BATCH_SIZE = 64
+BATCH_SIZE = 256
 DEVICE = 'auto'
 # ---------------------------------------------------------
 
 MODELS = {'MNIST': Method_CNN_MNIST, 'ORL': Method_CNN_ORL, 'CIFAR': Method_CNN_CIFAR}
 VAL_SIZE = {'MNIST': 0.1, 'ORL': 40, 'CIFAR': 0.1}   # ORL: one image per person
-RESULTS_DIR = '../../result/stage_3_result/'
+RESULTS_DIR = './result/stage_3_result/'
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
 # ---- parameter section ----
@@ -36,7 +36,7 @@ torch.manual_seed(2)
 
 # ---- object initialization section ----
 data_obj = Dataset_Loader(DATASET, '')
-data_obj.dataset_source_folder_path = '../../data/stage_3_data/'
+data_obj.dataset_source_folder_path = './data/stage_3_data/'
 data_obj.dataset_source_file_name = DATASET
 
 method_obj = MODELS[DATASET](f'CNN ({DATASET})', '', device=DEVICE)
