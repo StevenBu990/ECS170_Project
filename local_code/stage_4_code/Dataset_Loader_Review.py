@@ -37,6 +37,9 @@ class Dataset_Loader_Review(dataset):
         return texts, labels
 
     def load(self):
+        if self.data is not None:
+            return self.data
+        
         print('loading reviews (50,000 files, this takes a little while)...')
         train_texts, train_y = self.read_split('train')
         test_texts, test_y = self.read_split('test')
@@ -50,5 +53,6 @@ class Dataset_Loader_Review(dataset):
         # TODO 3: X_test, the same way, from test_texts
         X_test = np.array([self.vocab.encode(t, self.max_len) for t in test_texts], dtype=np.int64)
 
-        return {'train': {'X': X_train, 'y': np.array(train_y, dtype=np.int64)},
+        self.data = {'train': {'X': X_train, 'y': np.array(train_y, dtype=np.int64)},
                 'test':  {'X': X_test,  'y': np.array(test_y,  dtype=np.int64)}}
+        return self.data
