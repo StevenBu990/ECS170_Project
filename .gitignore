@@ -10,3 +10,4 @@ result/**/*
 !result/**/
 !result/**/*.png
 !result/**/*.csv
+data/stage_4_data/glove*

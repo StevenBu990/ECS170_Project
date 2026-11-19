@@ -50,7 +50,6 @@ class Dataset_Loader_Review(dataset):
         print('vocabulary size:', len(self.vocab))
 
         X_train = np.array([self.vocab.encode(t, self.max_len) for t in train_texts], dtype=np.int64)
-        # TODO 3: X_test, the same way, from test_texts
         X_test = np.array([self.vocab.encode(t, self.max_len) for t in test_texts], dtype=np.int64)
 
         self.data = {'train': {'X': X_train, 'y': np.array(train_y, dtype=np.int64)},
