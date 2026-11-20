@@ -88,3 +88,25 @@ class Method_Text(method, nn.Module):
         print('--start testing...')
         pred_y = self.test(self.data['test']['X'])
         return {'pred_y': pred_y, 'true_y': self.data['test']['y']}
+
+    @torch.no_grad()
+    def generate(self, three_word_ids, sos_id, eos_id, max_new_ids=300):
+        self.eval()
+        ids = [sos_id] + list(three_word_ids)
+        x = torch.tensor([ids], device=self.device)
+
+        logits, hidden = self(x)
+        next_logits = logits[0, -1]
+
+        for _ in range(max_new_ids):
+            probs = torch.softmax(next_logits, dim=-1)
+            nxt_id = torch.multinomial(probs, 1).item()
+
+            if nxt_id == eos_id:
+                break
+
+            ids.append(nxt_id)
+            logits, hidden = self(torch.tensor([[nxt_id]], device=self.device), hidden)
+            next_logits = logits[0, -1]
+
+        return ids[1:]
