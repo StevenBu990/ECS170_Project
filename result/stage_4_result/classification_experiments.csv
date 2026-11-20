@@ -1,6 +1,8 @@
-run,cell,embed_dim,hidden_dim,num_layers,epochs,lr,batch_size,max_len,device,time_s,train_acc,val_acc,test_accuracy,test_precision_weighted,test_recall_weighted,test_f1_weighted,test_precision_macro,test_recall_macro,test_f1_macro,test_precision_micro,test_recall_micro,test_f1_micro
-rnn,rnn,100,128,1,10,0.001,64,200,mps,162.5,0.9369,0.7612,0.7646,0.765,0.7646,0.7645,0.765,0.7646,0.7645,0.7646,0.7646,0.7646
-lstm,lstm,100,128,1,10,0.001,64,200,mps,89.5,0.9948,0.8388,0.8183,0.819,0.8183,0.8182,0.819,0.8183,0.8182,0.8183,0.8183,0.8183
-gru,gru,100,128,1,10,0.001,64,200,mps,214.8,0.9955,0.8568,0.8386,0.8391,0.8386,0.8385,0.8391,0.8386,0.8385,0.8386,0.8386,0.8386
-lstm_e5,lstm,100,128,1,5,0.001,64,200,mps,44.0,0.9406,0.86,0.839,0.8391,0.839,0.8389,0.8391,0.839,0.8389,0.839,0.839,0.839
-gru_e5,gru,100,128,1,5,0.001,64,200,mps,97.6,0.9656,0.8588,0.8452,0.8453,0.8452,0.8451,0.8453,0.8452,0.8451,0.8452,0.8452,0.8452
+run,cell,embed_dim,hidden_dim,num_layers,bidirectional,pooling,dropout,epochs,lr,batch_size,max_len,device,time_s,train_acc,val_acc,test_accuracy,test_precision_weighted,test_recall_weighted,test_f1_weighted,test_precision_macro,test_recall_macro,test_f1_macro,test_precision_micro,test_recall_micro,test_f1_micro
+rnn,rnn,100,128,1,False,last,0.0,10,0.001,64,200,mps,162.5,0.9369,0.7612,0.7646,0.765,0.7646,0.7645,0.765,0.7646,0.7645,0.7646,0.7646,0.7646
+lstm,lstm,100,128,1,False,last,0.0,10,0.001,64,200,mps,89.5,0.9948,0.8388,0.8183,0.819,0.8183,0.8182,0.819,0.8183,0.8182,0.8183,0.8183,0.8183
+gru,gru,100,128,1,False,last,0.0,10,0.001,64,200,mps,214.8,0.9955,0.8568,0.8386,0.8391,0.8386,0.8385,0.8391,0.8386,0.8385,0.8386,0.8386,0.8386
+lstm_e5,lstm,100,128,1,False,last,0.0,5,0.001,64,200,mps,44.0,0.9406,0.86,0.839,0.8391,0.839,0.8389,0.8391,0.839,0.8389,0.839,0.839,0.839
+gru_e5,gru,100,128,1,False,last,0.0,5,0.001,64,200,mps,97.6,0.9656,0.8588,0.8452,0.8453,0.8452,0.8451,0.8453,0.8452,0.8451,0.8452,0.8452,0.8452
+gru_bi_max,gru,100,128,1,True,max,0.3,5,0.001,64,200,mps,463.9,0.9182,0.8844,0.868,0.8683,0.868,0.8679,0.8683,0.868,0.8679,0.868,0.868,0.868
+lstm_bi_max,lstm,100,128,1,True,max,0.3,5,0.001,64,200,mps,118.4,0.9132,0.8768,0.8584,0.8595,0.8584,0.8582,0.8595,0.8584,0.8582,0.8584,0.8584,0.8584

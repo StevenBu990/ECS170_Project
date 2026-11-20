@@ -1,0 +1,4 @@
+run,cell,embed_dim,hidden_dim,num_layers,epochs,lr,batch_size,device,time_s,final_loss,next_word_acc,exact_match,word_match
+lstm,lstm,128,256,1,100,0.002,32,mps,174.6,0.4363,0.8846,0.52,0.5844
+gru,gru,128,256,1,100,0.002,32,mps,221.6,0.4512,0.8831,0.48,0.5466
+rnn,rnn,128,256,1,100,0.002,32,mps,180.9,0.4743,0.881,0.47,0.547
