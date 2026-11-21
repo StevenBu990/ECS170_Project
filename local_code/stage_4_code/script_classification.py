@@ -14,13 +14,13 @@ import csv
 import time
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'lstm_bi_max'
-CELL = 'lstm'
+RUN_NAME = 'gru_uni_max'
+CELL = 'gru'
 EMBED_DIM = 100
 HIDDEN_DIM = 128
 NUM_LAYERS = 1
-BIDIRECTIONAL = True       # read each review in both directions
-POOLING = 'max'            # 'last' (final hidden state) or 'max' (max over all words)
+BIDIRECTIONAL = False
+POOLING = 'max'
 DROPOUT = 0.3
 EPOCHS = 5
 LEARNING_RATE = 1e-3
