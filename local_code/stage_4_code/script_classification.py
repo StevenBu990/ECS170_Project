@@ -14,12 +14,12 @@ import csv
 import time
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'gru_uni_max'
+RUN_NAME = 'gru_bi_max'
 CELL = 'gru'
 EMBED_DIM = 100
 HIDDEN_DIM = 128
 NUM_LAYERS = 1
-BIDIRECTIONAL = False
+BIDIRECTIONAL = True
 POOLING = 'max'
 DROPOUT = 0.3
 EPOCHS = 5

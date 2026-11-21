@@ -12,8 +12,8 @@ import re
 import time
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'rnn'
-CELL = 'rnn'
+RUN_NAME = 'lstm'
+CELL = 'lstm'
 EMBED_DIM = 128
 HIDDEN_DIM = 256
 NUM_LAYERS = 1
