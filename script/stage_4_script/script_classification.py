@@ -14,12 +14,15 @@ import csv
 import time
 
 # ---- experiment settings: change these for each run ----
-RUN_NAME = 'rnn'
-CELL = 'rnn'               # 'rnn', 'lstm', or 'gru'
+RUN_NAME = 'gru_bi_max'
+CELL = 'gru'
 EMBED_DIM = 100
 HIDDEN_DIM = 128
 NUM_LAYERS = 1
-EPOCHS = 10
+BIDIRECTIONAL = True
+POOLING = 'max'
+DROPOUT = 0.3
+EPOCHS = 5
 LEARNING_RATE = 1e-3
 BATCH_SIZE = 64
 MAX_LEN = 200              # words kept per review
@@ -41,7 +44,8 @@ data_obj.load()                           # load once now to get the vocabulary 
 
 method_obj = Method_RNN_Classifier(f'{CELL.upper()} classifier', '', vocab_size=len(data_obj.vocab),
                                    device=DEVICE, cell=CELL, embed_dim=EMBED_DIM,
-                                   hidden_dim=HIDDEN_DIM, num_layers=NUM_LAYERS)
+                                   hidden_dim=HIDDEN_DIM, num_layers=NUM_LAYERS,
+                                   bidirectional=BIDIRECTIONAL, pooling=POOLING, dropout=DROPOUT)
 method_obj.max_epoch = EPOCHS
 method_obj.learning_rate = LEARNING_RATE
 method_obj.batch_size = BATCH_SIZE
@@ -90,7 +94,8 @@ plt.savefig(f'{RESULTS_DIR}clf_{RUN_NAME}_curves.png', dpi=150)
 # ---- record this run ----
 pd.DataFrame(h).to_csv(f'{RESULTS_DIR}clf_{RUN_NAME}_history.csv', index=False)
 row = {'run': RUN_NAME, 'cell': CELL, 'embed_dim': EMBED_DIM, 'hidden_dim': HIDDEN_DIM,
-       'num_layers': NUM_LAYERS, 'epochs': EPOCHS, 'lr': LEARNING_RATE, 'batch_size': BATCH_SIZE,
+       'num_layers': NUM_LAYERS, 'bidirectional': BIDIRECTIONAL, 'pooling': POOLING, 'dropout': DROPOUT,
+       'epochs': EPOCHS, 'lr': LEARNING_RATE, 'batch_size': BATCH_SIZE,
        'max_len': MAX_LEN, 'device': str(method_obj.device), 'time_s': round(train_time, 1),
        'train_acc': round(h['acc'][-1], 4), 'val_acc': round(float(h['val_acc'][-1]), 4)}
 row.update({f'test_{k}': round(v, 4) for k, v in scores.items()})
